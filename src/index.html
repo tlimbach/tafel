@@ -6,6 +6,7 @@
 	<script type="text/javascript" src="3rdparty\raphael.js"></script>
 	<script type="text/javascript" src="3rdparty\helvetica.js"></script>
 	<script type="text/javascript" src="letter.js"></script>
+	<script type="text/javascript" src="fixedletter.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/pouchdb/7.2.1/pouchdb.js"></script>
 	
 	<meta content="text/html;charset=UTF-8" http-equiv="Content-Type" />
@@ -27,8 +28,8 @@
 		
 		var dbid = 0;
 		
-		new Letter(db, ++dbid, raphObject, 100, 'a');
-		new Letter(db, ++dbid, raphObject, 300, 'B');
+		new FixedLetter(db, raphObject, 100, 'a');
+		new FixedLetter(db, raphObject, 200, 'B');
 		
 	}
 	

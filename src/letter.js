@@ -1,21 +1,25 @@
 class Letter {
-	constructor(db, dbid, raphael, x, char) {
+	
+	static dbId = 0;
+		
+	constructor(db, raphael, y, char) {
+
 
 		this.db = db;
-		this._id = dbid;
+		this._id = ++Letter.dbId;
 
 		const path = helvetica[char];
 
 		const that = this;
 
-		this.letter = raphael.path(path).attr({ fill: "#000", stroke: "#000", "fill-opacity": .5, "stroke-width": 1, "stroke-linecap": "round" });
+		this.letter = raphael.path(path).attr({ fill: "#000", stroke: "#000", "fill-opacity": .5, "stroke-width": 1, "stroke-linecap": "round" }).translate(10,y);
 		this.letter.drag(this.moveDrag.bind(this), this.moveStart.bind(this), this.moveUp.bind(this));
 
 		db.get("" + this._id, function(err, doc) {
 			if (err) {
 				console.log("niemand da" + err);
 				// Noch nicht in Datenbank vorhanden
-				that.letter.translate(x, 50);
+//				that.letter.translate(0, y);
 
 			} else {
 				console.log("found doc for id " + JSON.stringify(doc));
@@ -26,6 +30,7 @@ class Letter {
 		});
 
 	}
+
 
 	moveStart = function() {
 		this.odx = 0;

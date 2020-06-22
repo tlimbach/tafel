@@ -19,6 +19,7 @@
 	
 	var raphael; 
 	var db = new PouchDB('letterdb');
+	var bin;
 	
 	db.info().then(function (info) {
    		console.log(info);
@@ -26,6 +27,14 @@
 	
 	function startup() {
 		raphael = Raphael('canvasdiv', 1000, 752);
+		
+		bin = raphael.rect(80, 600, 700, 30,5);
+		
+		/*
+		bin.mouseover(function(e) {
+			log ("mouseover", e);
+		})
+		*/
 		
 		var dbid = 0;
 		
@@ -65,10 +74,6 @@
 		console.log(message + " :" + JSON.stringify(obj));
 	}
 	
-	
-	function log(obj) {
-		console.log(JSON.stringify(obj));
-	}
 	
 	</script>
 </head>

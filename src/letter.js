@@ -3,7 +3,6 @@ class Letter {
 	static dbId = 0;
 
 	static ofDb(dbInfo) {
-		//		log("dbinfo", dbInfo);
 		const letter = new Letter();
 		letter.initFromDb(dbInfo);
 		
@@ -29,6 +28,9 @@ class Letter {
 			.translate(dbInfo.x, dbInfo.y);
 
 		this.path.drag(this.moveDrag.bind(this), this.moveStart.bind(this), this.moveUp.bind(this));
+		
+		this.totalDx = dbInfo.x;
+		this.totalDy = dbInfo.y;
 	}
 
 
@@ -44,6 +46,9 @@ class Letter {
 		this.path = raphael.path(path).attr({ fill: "#00f", stroke: "#00f", "fill-opacity": 0, "stroke-width": 0, "stroke-linecap": "round" }).translate(10, y);
 		this.path.drag(this.moveDrag.bind(this), this.moveStart.bind(this), this.moveUp.bind(this));
 		this.path.animate({ "fill-opacity": 0.5 }, 1000);
+		
+		this.totalDx = 10;
+		this.totalDy = this.startY;
 
 	}
 
@@ -51,10 +56,14 @@ class Letter {
 	moveStart() {
 		this.odx = 0;
 		this.ody = 0;
+		
 		this.path.animate({ "fill-opacity": 0.2 }, 100);
 	}
 
 	moveDrag(dx, dy) {
+		
+		this.totalDx = this.totalDx + dx - this.odx;
+		this.totalDy = this.totalDy + dy - this.ody;
 
 		this.path.translate(dx - this.odx, dy - this.ody);
 		this.odx = dx;
@@ -83,17 +92,15 @@ class Letter {
 		log("moveup");
 		this.path.animate({ "fill-opacity": 1 }, 2000);
 
-		const box = this.path.getBBox();
-
-		if (this._id == -1) {
+		if (this._id === -1) {
 			Letter.dbId++;
 			this._id=Letter.dbId;
 		}
-
+		
 		const savedata = {
 			char: this.char,
-			x: box.x,
-			y: box.y,
+			x: this.totalDx,
+			y: this.totalDy,
 			_id: "" + this._id
 		};
 

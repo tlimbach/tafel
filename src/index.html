@@ -6,7 +6,6 @@
 	<script type="text/javascript" src="3rdparty\raphael.js"></script>
 	<script type="text/javascript" src="3rdparty\helvetica.js"></script>
 	<script type="text/javascript" src="letter.js"></script>
-	<script type="text/javascript" src="fixedletter.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/pouchdb/7.2.1/pouchdb.js"></script>
 	<script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
 	
@@ -30,16 +29,18 @@
 		
 		bin = raphael.rect(80, 600, 700, 30,5);
 		
-		/*
-		bin.mouseover(function(e) {
-			log ("mouseover", e);
-		})
-		*/
-		
 		var dbid = 0;
 		
-		new FixedLetter( 100, 'a');
-		new FixedLetter( 200, 'B');
+		Letter.ofFixedLetter( 100, 'A');
+		Letter.ofFixedLetter( 200, 'B');
+		Letter.ofFixedLetter( 300, 'C');
+
+/*
+		new ofFixedLatter( 400, 'M');
+		new ofFixedLatter( 500, 'I');
+		new ofFixedLatter( 600, 'P');
+		new ofFixedLatter( 700, 'Y');
+	*/
 		
 		showDbContent();
 		

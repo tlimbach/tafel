@@ -6,6 +6,7 @@ class Letter {
 		//		log("dbinfo", dbInfo);
 		const letter = new Letter();
 		letter.initFromDb(dbInfo);
+		
 	}
 
 	static ofFixedLetter(y, char) {
@@ -16,6 +17,7 @@ class Letter {
 	initFromDb(dbInfo) {
 		this.char = dbInfo.char;
 		this._id = dbInfo._id;
+		this.isReplaced = true;
 
 		if (Letter.dbId <= this._id) {
 			Letter.dbId = "" + (Number(this._id) + 1);
@@ -33,12 +35,15 @@ class Letter {
 	initFromFixedLetter(y, char) {
 
 		this.char = char;
-		this._id = Letter.dbId;
+		this.startY= y;
+		this._id = -1;
+		this.isReplaced = false;
 
 		const path = helvetica[char];
 
-		this.path = raphael.path(path).attr({ fill: "#000", stroke: "#000", "fill-opacity": .5, "stroke-width": 1, "stroke-linecap": "round" }).translate(10, y);
+		this.path = raphael.path(path).attr({ fill: "#00f", stroke: "#00f", "fill-opacity": 0, "stroke-width": 0, "stroke-linecap": "round" }).translate(10, y);
 		this.path.drag(this.moveDrag.bind(this), this.moveStart.bind(this), this.moveUp.bind(this));
+		this.path.animate({ "fill-opacity": 0.5 }, 1000);
 
 	}
 
@@ -60,6 +65,11 @@ class Letter {
 		} else {
 			this.path.attr("fill", "#000");
 		}
+		
+		if (!this.isReplaced) {
+			Letter.ofFixedLetter(this.startY, this.char);
+			this.isReplaced = true;
+		}
 
 	}
 
@@ -74,6 +84,11 @@ class Letter {
 		this.path.animate({ "fill-opacity": 1 }, 2000);
 
 		const box = this.path.getBBox();
+
+		if (this._id == -1) {
+			Letter.dbId++;
+			this._id=Letter.dbId;
+		}
 
 		const savedata = {
 			char: this.char,

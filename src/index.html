@@ -8,6 +8,7 @@
 	<script type="text/javascript" src="letter.js"></script>
 	<script type="text/javascript" src="fixedletter.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/pouchdb/7.2.1/pouchdb.js"></script>
+	<script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
 	
 	<meta content="text/html;charset=UTF-8" http-equiv="Content-Type" />
 	<meta content="UTF-8" http-equiv="encoding" />
@@ -16,7 +17,7 @@
 
 	<script type="text/javascript">
 	
-	var raphObject; 
+	var raphael; 
 	var db = new PouchDB('letterdb');
 	
 	db.info().then(function (info) {
@@ -24,18 +25,55 @@
  	})
 	
 	function startup() {
-		raphObject = Raphael('canvasdiv', 1000, 752);
+		raphael = Raphael('canvasdiv', 1000, 752);
 		
 		var dbid = 0;
 		
-		new FixedLetter(db, raphObject, 100, 'a');
-		new FixedLetter(db, raphObject, 200, 'B');
+		new FixedLetter( 100, 'a');
+		new FixedLetter( 200, 'B');
 		
+		showDbContent();
+		
+		db.allDocs({include_docs: true, descending: true}, function(err, docs) {
+    		for (var t=0; t<docs.rows.length; t++) {
+				const doc = docs.rows[t].doc;
+				log ("instantiating: ", doc);
+				Letter.ofDb(doc);	
+			}	
+  		});
+
+	
+		$("#btnDelete").click(function(){
+  			db.destroy(function (err, response) {
+  				if (err) {
+    				return console.log(err);
+  				} else {
+    				db = new PouchDB('letterdb');
+  				}
+			});	
+		});
+	
+	}
+	
+	function showDbContent() {
+		db.allDocs({include_docs: true, descending: true}, function(err, doc) {
+    		console.log(JSON.stringify(doc));
+  		});
+	}
+	
+	function log(message, obj) {
+		console.log(message + " :" + JSON.stringify(obj));
+	}
+	
+	
+	function log(obj) {
+		console.log(JSON.stringify(obj));
 	}
 	
 	</script>
 </head>
 <body onload="startup();">
+<div> <button id ="btnDelete" type="button">Delete Database</button></div>
 <div id="canvasdiv" style="width: 1000px; height: 752px;"></div>
 </body>
 </html>

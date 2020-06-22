@@ -1,64 +1,79 @@
 class Letter {
-	
+
 	static dbId = 0;
+
+	static ofDb(dbInfo) {
+		log(dbInfo);
+		const letter = new Letter();
+		letter.initFromDb(dbInfo);
+	}
+
+	static ofFixedLetter(y, char) {
+		const letter = new Letter();
+		letter.initFromFixedLetter(y, char); 		
+	}
+	
+	initFromDb(dbInfo) {
+		this.char = dbInfo.char;
+		this._id = dbInfo._id;
 		
-	constructor(db, raphael, y, char) {
+		if (Letter.dbId <= this._id) {
+			Letter.dbId = ""+(Number(this._id) + 1);
+		}
+		
+		const path = helvetica[this.char];
+
+		this.path = raphael.path(path).attr({ fill: "#000", stroke: "#000", "fill-opacity": .5, "stroke-width": 1, "stroke-linecap": "round" })
+			.translate(dbInfo.x, dbInfo.y);
+		
+		this.path.drag(this.moveDrag.bind(this), this.moveStart.bind(this), this.moveUp.bind(this));
+	}
 
 
-		this.db = db;
-		this._id = ++Letter.dbId;
+	initFromFixedLetter(y, char) {
+
+		this.char = char;
+		this._id = Letter.dbId;
 
 		const path = helvetica[char];
 
 		const that = this;
 
-		this.letter = raphael.path(path).attr({ fill: "#000", stroke: "#000", "fill-opacity": .5, "stroke-width": 1, "stroke-linecap": "round" }).translate(10,y);
-		this.letter.drag(this.moveDrag.bind(this), this.moveStart.bind(this), this.moveUp.bind(this));
-
-		db.get("" + this._id, function(err, doc) {
-			if (err) {
-				console.log("niemand da" + err);
-				// Noch nicht in Datenbank vorhanden
-//				that.letter.translate(0, y);
-
-			} else {
-				console.log("found doc for id " + JSON.stringify(doc));
-
-				that.letter.translate(doc.x, doc.y);
-			}
-
-		});
+		this.path = raphael.path(path).attr({ fill: "#000", stroke: "#000", "fill-opacity": .5, "stroke-width": 1, "stroke-linecap": "round" }).translate(10, y);
+		this.path.drag(this.moveDrag.bind(this), this.moveStart.bind(this), this.moveUp.bind(this));
 
 	}
 
 
-	moveStart = function() {
+	moveStart() {
 		this.odx = 0;
 		this.ody = 0;
-		this.letter.animate({ "fill-opacity": 0.2 }, 100);
-	};
+		this.path.animate({ "fill-opacity": 0.2 }, 100);
+	}
 
-	moveDrag = function(dx, dy) {
+	moveDrag(dx, dy) {
 
-		this.letter.translate(dx - this.odx, dy - this.ody);
+		this.path.translate(dx - this.odx, dy - this.ody);
 		this.odx = dx;
 		this.ody = dy;
 
-		let box = this.letter.getBBox();
+		const box = this.path.getBBox();
 
-		console.log("box now " + box);
+		//console.log("box now " + box);
 
-	};
+	}
 
-	moveUp = function() {
-		this.letter.animate({ "fill-opacity": 1 }, 2000);
+	moveUp() {
+		this.path.animate({ "fill-opacity": 1 }, 2000);
 
-		const box = this.letter.getBBox();
+		const box = this.path.getBBox();
 
-		let savedata = {};
-		savedata.x = box.x;
-		savedata.y = box.y;
-		savedata._id = "" + this._id;
+		const savedata = {
+			char : this.char,
+			x : box.x,
+			y : box.y,
+			_id : ""+this._id
+		};
 
 		db.get(savedata._id, function(err, doc) {
 			if (err) {
@@ -80,6 +95,6 @@ class Letter {
 			}
 
 		});
-	};
+	}
 
 }

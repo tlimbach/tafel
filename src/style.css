@@ -1,1 +1,6 @@
-
+@media print{
+	body {
+	size: auto;  
+	margin: 0;
+	}
+}

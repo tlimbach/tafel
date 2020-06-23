@@ -1,7 +1,5 @@
 class Letter {
 
-	static dbId = 0;
-
 	static ofDb(dbInfo) {
 		const letter = new Letter();
 		letter.initFromDb(dbInfo);
@@ -52,7 +50,6 @@ class Letter {
 
 	}
 
-
 	moveStart() {
 		this.odx = 0;
 		this.ody = 0;
@@ -61,6 +58,8 @@ class Letter {
 	}
 
 	moveDrag(dx, dy) {
+		
+		log("drag:", {x:dx, y:dy});
 		
 		this.totalDx = this.totalDx + dx - this.odx;
 		this.totalDy = this.totalDy + dy - this.ody;
@@ -136,3 +135,5 @@ class Letter {
 	}
 
 }
+
+Letter.dbId = 0;

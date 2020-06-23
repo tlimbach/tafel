@@ -6,6 +6,7 @@
 	<script type="text/javascript" src="3rdparty\raphael.js"></script>
 	<script type="text/javascript" src="3rdparty\helvetica.js"></script>
 	<script type="text/javascript" src="letter.js"></script>
+	<script type="text/javascript" src="printer.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/pouchdb/7.2.1/pouchdb.js"></script>
 	<script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
 	
@@ -13,10 +14,13 @@
 	<meta content="UTF-8" http-equiv="encoding" />
 	<meta http-equiv="pragma" content="no-cache" />
 	<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE8" />
+	
+	<style type="text/css" media="print">@page {  size: auto;  margin: 0;}</style>
 
 	<script type="text/javascript">
 	
-	var raphael; 
+	var raphael;
+	var printael; 
 	var db = new PouchDB('letterdb');
 	var bin;
 	
@@ -25,7 +29,8 @@
  	})
 	
 	function startup() {
-		raphael = Raphael('canvasdiv', 1000, 752);
+		raphael = Raphael('canvasdiv', 800, 752);
+		printael = Raphael('printdiv', 800, 752);
 		
 		bin = raphael.rect(80, 600, 700, 30,5);
 		
@@ -34,7 +39,7 @@
 		Letter.ofFixedLetter( 100, 'A');
 		Letter.ofFixedLetter( 200, 'B');
 		Letter.ofFixedLetter( 300, 'C');
-
+		
 /*
 		new ofFixedLatter( 400, 'M');
 		new ofFixedLatter( 500, 'I');
@@ -62,6 +67,21 @@
   				}
 			});	
 		});
+		
+		$("#btnPrint").click(function() {
+			var dbInfos = [];
+			db.allDocs({include_docs: true, descending: true}, function(err, docs) {
+				
+	    		for (var t=0; t<docs.rows.length; t++) {
+					const doc = docs.rows[t].doc;
+					dbInfos.push(doc);
+				}
+				
+				new Printer().print(dbInfos);
+					
+  			});
+			
+		});
 	
 	}
 	
@@ -79,7 +99,9 @@
 	</script>
 </head>
 <body onload="startup();">
-<div> <button id ="btnDelete" type="button">Delete Database</button></div>
-<div id="canvasdiv" style="width: 1000px; height: 752px;"></div>
+<div> <button id ="btnDelete" type="button">Deleti</button></div>
+<div> <button id ="btnPrint" type="button">Drucki</button></div>
+<div id="canvasdiv" style="width: 800px; height: 752px;"></div>
+<div id="printdiv" style="width: 800px; height: 752px; "></div>
 </body>
 </html>

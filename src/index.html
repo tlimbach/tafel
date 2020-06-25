@@ -15,12 +15,12 @@
 	<meta http-equiv="pragma" content="no-cache" />
 	<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE8" />
 	
-	<style type="text/css" media="print">@page {  size: auto;  margin: 0;}</style>
+	<!--- <style type="text/css" media="print">@page {  size: auto;  margin: 0;}</style> -->
 
 	<script type="text/javascript">
 	
 	var raphael;
-	var printael; 
+	
 	var db = new PouchDB('letterdb');
 	var bin;
 	
@@ -29,8 +29,14 @@
  	})
 	
 	function startup() {
-		raphael = Raphael('canvasdiv', 800, 752);
-		printael = Raphael('printdiv', 800, 752);
+		
+		const width = 800;
+		const a4factor = 192/272;
+		const height = width/a4factor;
+		
+		raphael = Raphael('canvasdiv', width, height);
+		
+		raphael.rect(0,0, width, height);
 		
 		bin = raphael.rect(80, 600, 700, 30,5);
 		
@@ -101,7 +107,11 @@
 <body onload="startup();">
 <div> <button id ="btnDelete" type="button">Deleti</button></div>
 <div> <button id ="btnPrint" type="button">Drucki</button></div>
+<!--
 <div id="canvasdiv" style="width: 800px; height: 752px;"></div>
-<div id="printdiv" style="width: 800px; height: 752px; "></div>
+<div id="printdiv" style="width: 800px; height: 752px; padding:0; margin:0; display:none;"></div>
+-->
+<div id="canvasdiv" ></div>
+<div id="printdiv" style="padding:0; margin:0; display:visible;"></div>
 </body>
 </html>

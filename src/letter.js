@@ -22,7 +22,8 @@ class Letter {
 
 		const path = helvetica[this.char];
 
-		this.path = raphael.path(path).attr({ fill: "#000", stroke: "#000", "fill-opacity": .5, "stroke-width": 1, "stroke-linecap": "round" })
+		this.path = raphael.path(path)
+			.attr({ fill: "#000", stroke: "#000", "fill-opacity": .5, "stroke-width": 1, "stroke-linecap": "round" })
 			.translate(dbInfo.x, dbInfo.y);
 
 		this.path.drag(this.moveDrag.bind(this), this.moveStart.bind(this), this.moveUp.bind(this));
@@ -84,7 +85,7 @@ class Letter {
 	isTrashArea() {
 		const box = this.path.getBBox();
 		const binY = bin.attr("y");
-		return box.y > binY;
+		return binY<10;
 	}
 
 	moveUp() {

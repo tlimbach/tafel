@@ -24,7 +24,8 @@ class Letter {
 
 		this.path = raphael.path(path)
 			.attr({ fill: "#000", stroke: "#000", "fill-opacity": .5, "stroke-width": 1, "stroke-linecap": "round" })
-			.translate(dbInfo.x, dbInfo.y);
+			.translate(dbInfo.x, dbInfo.y)
+			.scale(Letter.scale, Letter.scale);
 
 		this.path.drag(this.moveDrag.bind(this), this.moveStart.bind(this), this.moveUp.bind(this));
 		
@@ -42,7 +43,9 @@ class Letter {
 
 		const path = helvetica[char];
 
-		this.path = raphael.path(path).attr({ fill: "#00f", stroke: "#00f", "fill-opacity": 0, "stroke-width": 0, "stroke-linecap": "round" }).translate(10, y);
+		this.path = raphael.path(path).attr({ fill: "#00f", stroke: "#00f", "fill-opacity": 0, "stroke-width": 0, "stroke-linecap": "round" })
+			.translate(10, y)
+			.scale(Letter.scale, Letter.scale);
 		this.path.drag(this.moveDrag.bind(this), this.moveStart.bind(this), this.moveUp.bind(this));
 		this.path.animate({ "fill-opacity": 0.5 }, 1000);
 		
@@ -65,7 +68,10 @@ class Letter {
 		this.totalDx = this.totalDx + dx - this.odx;
 		this.totalDy = this.totalDy + dy - this.ody;
 
-		this.path.translate(dx - this.odx, dy - this.ody);
+		const moveX = (dx - this.odx) / Letter.scale;
+		const moveY = (dy - this.ody) / Letter.scale;
+
+		this.path.translate(moveX, moveY);
 		this.odx = dx;
 		this.ody = dy;
 
@@ -138,3 +144,4 @@ class Letter {
 }
 
 Letter.dbId = 0;
+Letter.scale = 0.5;

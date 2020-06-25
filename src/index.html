@@ -45,14 +45,7 @@
 		Letter.ofFixedLetter( 100, 'A');
 		Letter.ofFixedLetter( 200, 'B');
 		Letter.ofFixedLetter( 300, 'C');
-		
-/*
-		new ofFixedLatter( 400, 'M');
-		new ofFixedLatter( 500, 'I');
-		new ofFixedLatter( 600, 'P');
-		new ofFixedLatter( 700, 'Y');
-	*/
-		
+
 		showDbContent();
 		
 		db.allDocs({include_docs: true, descending: true}, function(err, docs) {

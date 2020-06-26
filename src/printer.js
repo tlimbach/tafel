@@ -24,10 +24,10 @@ class Printer {
 
 			const translation = this.computeTranslation(dbInfo);
 
-//			printael.path(path).attr({ fill: "#000", stroke: "#000", "fill-opacity": .5, "stroke-width": 1, "stroke-linecap": "round" })
-//				.translate(translation.x, translation.y)
-//				.scale(Letter.scale, Letter.scale)
-//				.rotate(0);
+			printael.path(path).attr({ fill: "#000", stroke: "#000", "fill-opacity": .5, "stroke-width": 1, "stroke-linecap": "round" })
+				.translate(translation.x, translation.y)
+				.scale(Letter.scale, Letter.scale)
+				.rotate(0);
 		}
 
 		this.printContent('printdiv');
@@ -36,7 +36,7 @@ class Printer {
 
 	computeTranslation(dbinfo) {
 		const x = -215 + (dbinfo.x * 0.68);
-		const y = -30 + (dbinfo.y * 0.65);
+		const y = -30 + (dbinfo.y * 0.765);
 
 		return { x, y };
 	}
@@ -55,7 +55,15 @@ class Printer {
 			+ '* {margin:0; padding:0;-moz-box-sizing: border-box;box-sizing:border-box;}'
 			+ '@page {  size: A4;  padding: 1px; margin: 0;}'
 			+ 'html, body {width:297mm;height:210mm;background-color:green;}'
-			+ '.small {background-color:yellow;position:relative;float:left;height:117mm;width:68mm;border:1px dotted gray;}'
+			+ '.small {background-color:yellow;position:fixed;height:115mm;width:75.25mm;border:1px dotted gray;}'
+			+ '#print1{top:0mm; left:0mm;}'
+			+ '#print2{top:0mm; left:75mm;}'
+			+ '#print3{top:0mm; left:150mm;}'
+			+ '#print4{top:0mm; left:225mm;}'
+			+ '#print5{top:115mm; left:0mm;}'
+			+ '#print6{top:115mm; left:75mm;}'
+			+ '#print7{top:115mm; left:150mm;}'
+			+ '#print8{top:115mm; left:225mm;}'
 			+ '</style>');
 		a.document.write('<html><body><div id="print1" class="small">');
 		a.document.write(divContents);

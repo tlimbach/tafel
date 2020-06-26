@@ -5,71 +5,98 @@ class Printer {
 	}
 
 	print(dbInfos) {
-
 		document.getElementById("printdiv").innerHTML = '';
 		this.generateHtml(dbInfos);
-
 	}
 
 	generateHtml(dbInfos) {
 
 		const a4factor = 192 / 272;
 
-		const width = 800;
+		const width = 400;
 		const height = width / a4factor;
 
 		const printael = Raphael('printdiv', width, height);
 
-		//		printael.rect(0,0, width/1, height/1);
-
-		var st = printael.set();
-
-		for (var dbInfo of dbInfos) {
+		for (const dbInfo of dbInfos) {
 
 			const path = helvetica[dbInfo.char];
 
-			printael.path(path).attr({ fill: "#000", stroke: "#000", "fill-opacity": .5, "stroke-width": 1, "stroke-linecap": "round" })
-				.translate(-30 + (dbInfo.x * 1 / 3), -30+(dbInfo.y * 1 / 3))
-				.scale(1 / 5, 1 / 5)
-				.rotate(0);
+			const translation = this.computeTranslation(dbInfo);
+
+//			printael.path(path).attr({ fill: "#000", stroke: "#000", "fill-opacity": .5, "stroke-width": 1, "stroke-linecap": "round" })
+//				.translate(translation.x, translation.y)
+//				.scale(Letter.scale, Letter.scale)
+//				.rotate(0);
 		}
 
 		this.printContent('printdiv');
 
 	}
 
+	computeTranslation(dbinfo) {
+		const x = -215 + (dbinfo.x * 0.68);
+		const y = -30 + (dbinfo.y * 0.65);
+
+		return { x, y };
+	}
+
 	printContent(el) {
 
+		const baseHeight = -18;
+		const offsetHeight = 70;
+
+		const snippetHeight = 210 / 2;
+		const snippedWidth = 297 / 4;
+
 		var divContents = document.getElementById("printdiv").innerHTML;
-		var a = window.open('', '', 'width=1800');
+		var a = window.open('', '', 'width=800');
 		a.document.write('<style type="text/css">'
-			+ '* {margin:0; padding:0;}'
-			+ '@page {  size: A4;  padding: 0; margin: 0;}'
-			+ 'body {background-color:green;}'
-			+ '.small {background-color:cyan;position:absolute;width:7.425cm;height:10.5cm;border:1px dotted red;}'
-			+ '#print1 {top:-15mm;left:1cm;}'
-			+ '#print2 {top:6cm;left:1cm;}'
+			+ '* {margin:0; padding:0;-moz-box-sizing: border-box;box-sizing:border-box;}'
+			+ '@page {  size: A4;  padding: 1px; margin: 0;}'
+			+ 'html, body {width:297mm;height:210mm;background-color:green;}'
+			+ '.small {background-color:yellow;position:relative;float:left;height:117mm;width:68mm;border:1px dotted gray;}'
 			+ '</style>');
 		a.document.write('<html><body><div id="print1" class="small">');
 		a.document.write(divContents);
-		a.document.write("</div>")
+		a.document.write("</div>");
 		a.document.write('<div id="print2" class="small">');
 		a.document.write(divContents);
-		a.document.write('</div></body></html>');
+		a.document.write("</div>");
+		a.document.write("</div>");
+		a.document.write('<div id="print3" class="small">');
+		a.document.write(divContents);
+		a.document.write("</div>");
+		a.document.write("</div>");
+		a.document.write('<div id="print4" class="small">');
+		a.document.write(divContents);
+		a.document.write("</div>");
+		a.document.write('<div id="print5" class="small">');
+		a.document.write(divContents);
+		a.document.write("</div>");
+		a.document.write('<div id="print6" class="small">');
+		a.document.write(divContents);
+		a.document.write("</div>");
+		a.document.write('<div id="print7" class="small">');
+		a.document.write(divContents);
+		a.document.write("</div>");
+		a.document.write('<div id="print8" class="small">');
+		a.document.write(divContents);
+		a.document.write("</div>");
+		a.document.write('</body></html>');
 		a.document.close();
 
 		const element = a.document.getElementById("print1");
 
-		let degree = 90;
+		let degree = 0;
 
 		element.style.webkitTransform = 'rotate(' + degree + 'deg)';
 		element.style.mozTransform = 'rotate(' + degree + 'deg)';
 		element.style.msTransform = 'rotate(' + degree + 'deg)';
 		element.style.oTransform = 'rotate(' + degree + 'deg)';
 		element.style.transform = 'rotate(' + degree + 'deg)';
-		
-		const element2 = a.document.getElementById("print2");
 
+		const element2 = a.document.getElementById("print2");
 
 
 		element2.style.webkitTransform = 'rotate(' + degree + 'deg)';
@@ -78,8 +105,40 @@ class Printer {
 		element2.style.oTransform = 'rotate(' + degree + 'deg)';
 		element2.style.transform = 'rotate(' + degree + 'deg)';
 
-				a.print();
-				a.close();
+
+		const element3 = a.document.getElementById("print3");
+
+
+		element3.style.webkitTransform = 'rotate(' + degree + 'deg)';
+		element3.style.mozTransform = 'rotate(' + degree + 'deg)';
+		element3.style.msTransform = 'rotate(' + degree + 'deg)';
+		element3.style.oTransform = 'rotate(' + degree + 'deg)';
+		element3.style.transform = 'rotate(' + degree + 'deg)';
+
+
+		const element4 = a.document.getElementById("print4");
+
+
+		degree = 180;
+
+		element4.style.webkitTransform = 'rotate(' + degree + 'deg)';
+		element4.style.mozTransform = 'rotate(' + degree + 'deg)';
+		element4.style.msTransform = 'rotate(' + degree + 'deg)';
+		element4.style.oTransform = 'rotate(' + degree + 'deg)';
+		element4.style.transform = 'rotate(' + degree + 'deg)';
+
+
+		const element5 = a.document.getElementById("print5");
+
+
+		element5.style.webkitTransform = 'rotate(' + degree + 'deg)';
+		element5.style.mozTransform = 'rotate(' + degree + 'deg)';
+		element5.style.msTransform = 'rotate(' + degree + 'deg)';
+		element5.style.oTransform = 'rotate(' + degree + 'deg)';
+		element5.style.transform = 'rotate(' + degree + 'deg)';
+
+		a.print();
+//					a.close();
 	}
 
 

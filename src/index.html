@@ -7,6 +7,7 @@
 	<script type="text/javascript" src="3rdparty\helvetica.js"></script>
 	<script type="text/javascript" src="letter.js"></script>
 	<script type="text/javascript" src="printer.js"></script>
+	<script type="text/javascript" src="start.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/pouchdb/7.2.1/pouchdb.js"></script>
 	<script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
 	
@@ -20,91 +21,16 @@
 	<script type="text/javascript">
 	
 	var raphael;
+	var db;
 	
-	var db = new PouchDB('letterdb');
-	var bin;
-	
-	db.info().then(function (info) {
-   		console.log(info);
- 	})
-	
-	function startup() {
-		
-		const width = 800;
-		const a4factor = 192/272;
-		const height = width/a4factor;
-		
-		raphael = Raphael('canvasdiv', width, height);
-		
-		raphael.rect(0,0, width, height);
-		
-		bin = raphael.rect(80, 600, 700, 30,5);
-		
-		var dbid = 0;
-		
-		Letter.ofFixedLetter( 100, 'A');
-		Letter.ofFixedLetter( 200, 'B');
-		Letter.ofFixedLetter( 300, 'C');
-
-		showDbContent();
-		
-		db.allDocs({include_docs: true, descending: true}, function(err, docs) {
-    		for (var t=0; t<docs.rows.length; t++) {
-				const doc = docs.rows[t].doc;
-				log ("instantiating: ", doc);
-				Letter.ofDb(doc);	
-			}	
-  		});
-
-	
-		$("#btnDelete").click(function(){
-  			db.destroy(function (err, response) {
-  				if (err) {
-    				return console.log(err);
-  				} else {
-    				db = new PouchDB('letterdb');
-  				}
-			});	
-		});
-		
-		$("#btnPrint").click(function() {
-			var dbInfos = [];
-			db.allDocs({include_docs: true, descending: true}, function(err, docs) {
-				
-	    		for (var t=0; t<docs.rows.length; t++) {
-					const doc = docs.rows[t].doc;
-					dbInfos.push(doc);
-				}
-				
-				new Printer().print(dbInfos);
-					
-  			});
-			
-		});
-	
-	}
-	
-	function showDbContent() {
-		db.allDocs({include_docs: true, descending: true}, function(err, doc) {
-    		console.log(JSON.stringify(doc));
-  		});
-	}
-	
-	function log(message, obj) {
+	function log(message, obj){
 		console.log(message + " :" + JSON.stringify(obj));
 	}
 	
-	
 	</script>
 </head>
-<body onload="startup();">
-<div> <button id ="btnDelete" type="button">Deleti</button></div>
-<div> <button id ="btnPrint" type="button">Drucki</button></div>
-<!--
-<div id="canvasdiv" style="width: 800px; height: 752px;"></div>
-<div id="printdiv" style="width: 800px; height: 752px; padding:0; margin:0; display:none;"></div>
--->
+<body onload="new Start();">
 <div id="canvasdiv" ></div>
-<div id="printdiv" style="padding:0; margin:0; display:visible;"></div>
+<div id="printdiv" style="padding:0; margin:0; display:none;"></div>
 </body>
 </html>

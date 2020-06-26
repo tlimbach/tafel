@@ -19,7 +19,7 @@ class Letter {
 		if (Letter.dbId <= this._id) {
 			Letter.dbId = "" + (Number(this._id) + 1);
 		}
-
+	
 		const path = helvetica[this.char];
 
 		this.path = raphael.path(path)
@@ -32,7 +32,7 @@ class Letter {
 		this.totalDx = dbInfo.x;
 		this.totalDy = dbInfo.y;
 	}
-
+	
 
 	initFromFixedLetter(y, char) {
 
@@ -55,15 +55,16 @@ class Letter {
 	}
 
 	moveStart() {
+		
 		this.odx = 0;
 		this.ody = 0;
 		
 		this.path.animate({ "fill-opacity": 0.2 }, 100);
 	}
-
+	
 	moveDrag(dx, dy) {
 		
-		log("drag:", {x:dx, y:dy});
+//		log("drag:", {x:dx, y:dy});
 		
 		this.totalDx = this.totalDx + dx - this.odx;
 		this.totalDy = this.totalDy + dy - this.ody;
@@ -89,9 +90,7 @@ class Letter {
 	}
 
 	isTrashArea() {
-		const box = this.path.getBBox();
-		const binY = bin.attr("y");
-		return binY<10;
+		return false;
 	}
 
 	moveUp() {
@@ -130,6 +129,7 @@ class Letter {
 				savedata._rev = doc._rev;
 
 				if (that.isTrashArea()) {
+					console.log("deleting", savedata);
 					db.remove(savedata);
 					that.path.remove();
 				} else {
@@ -144,4 +144,4 @@ class Letter {
 }
 
 Letter.dbId = 0;
-Letter.scale = 0.5;
+Letter.scale = 0.2;

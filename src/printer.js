@@ -36,7 +36,7 @@ class Printer {
 
 	computeTranslation(dbinfo) {
 		const x = -215 + (dbinfo.x * 0.68);
-		const y = -30 + (dbinfo.y * 0.765);
+		const y = -30 + (dbinfo.y * 0.68);
 
 		return { x, y };
 	}
@@ -54,16 +54,16 @@ class Printer {
 		a.document.write('<style type="text/css">'
 			+ '* {margin:0; padding:0;-moz-box-sizing: border-box;box-sizing:border-box;}'
 			+ '@page {  size: A4;  padding: 1px; margin: 0;}'
-			+ 'html, body {width:297mm;height:210mm;background-color:green;}'
-			+ '.small {background-color:yellow;position:fixed;height:115mm;width:75.25mm;border:1px dotted gray;}'
+			+ 'html, body {width:300mm;height:210mm;background-color:green;}'
+			+ '.small {background-color:yellow;position:fixed;height:107mm;width:75.25mm;border:1px dotted gray;}'
 			+ '#print1{top:0mm; left:0mm;}'
 			+ '#print2{top:0mm; left:75mm;}'
 			+ '#print3{top:0mm; left:150mm;}'
 			+ '#print4{top:0mm; left:225mm;}'
-			+ '#print5{top:115mm; left:0mm;}'
-			+ '#print6{top:115mm; left:75mm;}'
-			+ '#print7{top:115mm; left:150mm;}'
-			+ '#print8{top:115mm; left:225mm;}'
+			+ '#print5{top:107mm; left:0mm;}'
+			+ '#print6{top:107mm; left:75mm;}'
+			+ '#print7{top:107mm; left:150mm;}'
+			+ '#print8{top:107mm; left:225mm;}'
 			+ '</style>');
 		a.document.write('<html><body><div id="print1" class="small">');
 		a.document.write(divContents);

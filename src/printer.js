@@ -30,7 +30,11 @@ class Printer {
 				.rotate(0);
 		}
 
-		this.printContent('printdiv');
+		try {
+			this.printContent('printdiv');
+		} catch(err) {
+			console.log(err);
+		}
 
 	}
 

@@ -14,7 +14,7 @@ class Start {
 		
 		this.startup();
 	}
-f
+
 	startup() {
 
 		const width = 800;

@@ -3,7 +3,7 @@ class Letter {
 	static ofDb(dbInfo) {
 		const letter = new Letter();
 		letter.initFromDb(dbInfo);
-		
+
 	}
 
 	static ofFixedLetter(y, char) {
@@ -19,93 +19,113 @@ class Letter {
 		if (Letter.dbId <= this._id) {
 			Letter.dbId = "" + (Number(this._id) + 1);
 		}
-	
-		const path = helvetica[this.char];
 
-		this.path = raphael.path(path)
-			.attr({ fill: "#000", stroke: "#000", "fill-opacity": .5, "stroke-width": 1, "stroke-linecap": "round" })
-			.translate(dbInfo.x, dbInfo.y)
-			.scale(Letter.scale, Letter.scale);
+		const p = helvetica[this.char];
 
-		this.path.drag(this.moveDrag.bind(this), this.moveStart.bind(this), this.moveUp.bind(this));
+		this.path = raphael.nested();
+		this.path.path(p);
+		log("initilized at ", {dbInfo});
+		this.path.move(dbInfo.x, dbInfo.y);
 		
-		this.totalDx = dbInfo.x;
-		this.totalDy = dbInfo.y;
-	}
-	
+		this.path.scale(Letter.scale, Letter.scale);
+		this.path.attr({ fill: "black", "fill-opacity": 1 });
+//
+				this.path.draggable()
+			.on('dragend', e => {
+				this.savePosition();
+			});
+			}
+
 
 	initFromFixedLetter(y, char) {
 
 		this.char = char;
-		this.startY= y;
+		this.startY = y;
 		this._id = -1;
 		this.isReplaced = false;
 
-		const path = helvetica[char];
+		const p = helvetica[char];
 
-		this.path = raphael.path(path).attr({ fill: "#00f", stroke: "#00f", "fill-opacity": 0, "stroke-width": 0, "stroke-linecap": "round" })
-			.translate(10, y)
-			.scale(Letter.scale, Letter.scale);
-		this.path.drag(this.moveDrag.bind(this), this.moveStart.bind(this), this.moveUp.bind(this));
-		this.path.animate({ "fill-opacity": 0.5 }, 1000);
+		this.path = raphael.nested();
+		this.path.path(p);
+		this.path.move(10, y);
+		this.path.scale(Letter.scale, Letter.scale);
+		this.path.attr({ fill: "black", "fill-opacity": 1 });
 		
-		this.totalDx = 10;
-		this.totalDy = this.startY;
-
-	}
-
-	moveStart() {
-		
-		this.odx = 0;
-		this.ody = 0;
-		
-		this.path.animate({ "fill-opacity": 0.2 }, 100);
-	}
-	
-	moveDrag(dx, dy) {
-		
-//		log("drag:", {x:dx, y:dy});
-		
-		this.totalDx = this.totalDx + dx - this.odx;
-		this.totalDy = this.totalDy + dy - this.ody;
-
-		const moveX = (dx - this.odx) / Letter.scale;
-		const moveY = (dy - this.ody) / Letter.scale;
-
-		this.path.translate(moveX, moveY);
-		this.odx = dx;
-		this.ody = dy;
-
-		if (this.isTrashArea()) {
-			this.path.attr("fill", "red");
-		} else {
-			this.path.attr("fill", "#000");
-		}
-		
-		if (!this.isReplaced) {
+		this.path.draggable()
+			.on('dragmove', e => {
+				
+						if (!this.isReplaced) {
 			Letter.ofFixedLetter(this.startY, this.char);
 			this.isReplaced = true;
 		}
+				
+//				e.preventDefault()
+//				e.detail.handler.move(100, 200)
+				// events are still bound e.g. dragend will fire anyway
+				const X = e.detail.event.clientX;
+				const Y = e.detail.event.clientY;
+				log("dm event=", {x:X, y:Y});
+				
+				if (Y<300) {
+					this.path.attr({fill: "cyan"});
+				} else {
+					this.path.attr({fill: "red"});
+	//				this.path.animate({duration:1000}).move(0,0);
+				}
+			});
+			
+			this.path.draggable()
+			.on('dragend', e => {
+				
+				
+				
+				
+//				if (Y<300) {
+//
+//				} else {
+//log("YOu are doomed!");
+//				}
+				
+				this.savePosition();
+			});
 
 	}
+
+//	moveStart() {
+//
+//		this.odx = 0;
+//		this.ody = 0;
+//
+//		this.path.animate({ "fill-opacity": 0.2 }, 100);
+//	}
+
+
+
+
+
 
 	isTrashArea() {
 		return false;
 	}
 
-	moveUp() {
-		log("moveup");
-		this.path.animate({ "fill-opacity": 1 }, 2000);
+	savePosition(e) {
+		
+		const x = this.path.x();
+		const y = this.path.y();
+		
+		log("moveup", {x:x, y:y});
+		
 
 		if (this._id === -1) {
 			Letter.dbId++;
-			this._id=Letter.dbId;
+			this._id = Letter.dbId;
 		}
-		
+
 		const savedata = {
 			char: this.char,
-			x: this.totalDx,
-			y: this.totalDy,
+			x: x,
+			y: y,
 			_id: "" + this._id
 		};
 

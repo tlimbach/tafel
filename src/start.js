@@ -24,32 +24,31 @@ class Start {
 		const windowWidth = window.innerWidth;
 		const windowHeight = window.innerHeight;
 
-		raphael = Raphael('canvasdiv', windowWidth, windowHeight);
-
-		let pgWidth = 400;
-		let pgHeight = pgWidth / a4factor;
-		 
-	
-		raphael.rect(300, 20, pgWidth, pgHeight);
+		raphael = SVG().addTo('#canvasdiv').size(windowWidth, windowHeight);
 		
-
+		const pgWidth = 400;
+		const pgHeight = pgWidth / a4factor;
+		 
+		raphael.rect(pgWidth, pgHeight).move(300, 20).fill("lightgray");
+		
 		Letter.ofFixedLetter(100, 'A');
 		Letter.ofFixedLetter(200, 'B');
 		Letter.ofFixedLetter(300, 'C');
 		Letter.ofFixedLetter(400, 'D');
+		Letter.ofFixedLetter(500, 'e');
 
 		this.showDbContent();
 
 		db.allDocs({ include_docs: true, descending: true }, function(err, docs) {
 			for (let t = 0; t < docs.rows.length; t++) {
 				const doc = docs.rows[t].doc;
-				log("instantiating: ", doc);
+//				log("instantiating: ", doc);
 				Letter.ofDb(doc);
 			}
 		});
 		
-		const drucki = raphael.text(windowWidth-200, 20, "Drucki").scale(2,2);
-		const deleti = raphael.text(windowWidth-200, 60, "Deleti");
+		const drucki = raphael.text("Drucki").move(windowWidth-200, 20 ).scale(2,2);
+		const deleti = raphael.text("Deleti").move(windowWidth-200, 60);
 
 		
 

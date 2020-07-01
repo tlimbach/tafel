@@ -16,18 +16,24 @@ class Printer {
 		const width = 400;
 		const height = width / a4factor;
 
-		const printael = Raphael('printdiv', width, height);
+		const printael = SVG().addTo('#printdiv').size(width, height);
 
 		for (const dbInfo of dbInfos) {
 
-			const path = helvetica[dbInfo.char];
+			const p = helvetica[dbInfo.char];
 
 			const translation = this.computeTranslation(dbInfo);
+			
+			this.path = printael.nested();
+		this.path.path(p);
+		log("initilized for print at ", {x: translation.x, y:translation.y});
+		this.path.move(translation.x, translation.y);
+		this.path.scale(Letter.scale, Letter.scale);
 
-			printael.path(path).attr({ fill: "#000", stroke: "#000", "fill-opacity": .5, "stroke-width": 1, "stroke-linecap": "round" })
-				.translate(translation.x, translation.y)
-				.scale(Letter.scale, Letter.scale)
-				.rotate(0);
+//			printael.path(path).attr({ fill: "#000", stroke: "#000", "fill-opacity": .5, "stroke-width": 1, "stroke-linecap": "round" })
+//				.translate(translation.x, translation.y)
+//				.scale(Letter.scale, Letter.scale)
+//				.rotate(0);
 		}
 
 		try {
@@ -39,8 +45,8 @@ class Printer {
 	}
 
 	computeTranslation(dbinfo) {
-		const x = -215 + (dbinfo.x * 0.68);
-		const y = -30 + (dbinfo.y * 0.68);
+		const x = -1310*0.68 + dbinfo.x*0.68;
+		const y = 134*0.68 + dbinfo.y*0.68;
 
 		return { x, y };
 	}

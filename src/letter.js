@@ -36,7 +36,7 @@ class Letter {
 			.on('dragmove', e => {
 
 				if (!this.isReplaced) {
-					Letter.ofFixedSVG(this.startY, this.svg);
+					Letter.ofFixedSVG(this.startY, this.scale, this.svg);
 					this.isReplaced = true;
 				}
 			});
@@ -55,7 +55,7 @@ class Letter {
 		this._id = dbInfo._id;
 		this.isReplaced = true;
 
-		if (Letter.dbId <= this._id) {
+		if (Number(Letter.dbId) <= Number(this._id)) {
 			Letter.dbId = "" + (Number(this._id) + 1);
 		}
 		
@@ -113,16 +113,14 @@ class Letter {
 					Letter.ofFixedLetter(this.startY, this.char);
 					this.isReplaced = true;
 				}
+ 
+//				log("dm event=", { x: X, y: Y });
 
-				const X = e.detail.event.clientX;
-				const Y = e.detail.event.clientY;
-				log("dm event=", { x: X, y: Y });
-
-				if (Y < 300) {
-					this.path.attr({ fill: "cyan" });
-				} else {
-					this.path.attr({ fill: "red" });
-				}
+//				if (Y < 300) {
+//					this.path.attr({ fill: "cyan" });
+//				} else {
+//					this.path.attr({ fill: "red" });
+//				}
 			});
 
 		this.path.draggable()

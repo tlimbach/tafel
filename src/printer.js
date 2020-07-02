@@ -68,8 +68,20 @@ class Printer {
 
 		log("waubui at ", { x: dbinfo.x, y: dbinfo.y });
 
-		const x = -500 + dbinfo.x;
-		const y = -35 + dbinfo.y;
+		let x = -500 + dbinfo.x;
+		let y = -35 + dbinfo.y;
+		
+		if (dbinfo.scale == 1.0) {
+			console.log("groﬂer wauzi!");
+			x = -300 +dbinfo.x;
+			y = -20 + dbinfo.y;
+		}
+		
+		if (dbinfo.scale == 2.0) {
+			console.log("riesen wauzi!");
+			x = -150 +dbinfo.x;
+			y = -10 + dbinfo.y;
+		}
 
 		return { x, y };
 	}

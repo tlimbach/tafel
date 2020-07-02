@@ -82,14 +82,14 @@ class Printer {
 			+ '@page {  size: A4;  padding: 0; margin: 0;}'
 			+ 'html, body {width:297mm;height:210mm;background-color:green;}'
 			+ '.small {background-color:yellow;position:fixed;border:1px dotted red;}'
-			+ '#print1{top:-10mm; left:-16mm;}'
-			+ '#print2{top:-10mm; left:59mm;}'
-			+ '#print3{top:-10mm; left:133mm;}'
-			+ '#print4{top:-10mm; left:208mm;}'
-			+ '#print5{top:93mm; left:-16mm;}'
-			+ '#print6{top:93mm; left:59mm;}'
-			+ '#print7{top:93mm; left:133mm;}'
-			+ '#print8{top:93mm; left:208mm;}'
+			+ '#print1{top:-11mm; left:-16mm;}'
+			+ '#print2{top:-11mm; left:59mm;}'
+			+ '#print3{top:-11mm; left:133mm;}'
+			+ '#print4{top:-11mm; left:208mm;}'
+			+ '#print5{top:94mm; left:-16mm;}'
+			+ '#print6{top:94mm; left:59mm;}'
+			+ '#print7{top:94mm; left:133mm;}'
+			+ '#print8{top:94mm; left:208mm;}'
 			+ '</style>');
 		a.document.write('<html><body><div id="print1" class="small">');
 		a.document.write(divContents);
@@ -120,7 +120,7 @@ class Printer {
 		
 		a.document.write('</body></html>');
 		
-		const scale = "scale(0.70, 0.68)";
+		const scale = "scale(0.69, 0.69)";
 		
 		
 		a.document.getElementById("print1").style.transform = scale;

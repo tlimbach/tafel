@@ -28,7 +28,7 @@ class Printer {
 		this.path.path(p);
 		log("initilized for print at ", {x: translation.x, y:translation.y});
 		this.path.move(translation.x, translation.y);
-		this.path.scale(Letter.scale, Letter.scale);
+		this.path.scale(dbInfo.scale, dbInfo.scale);
 
 //			printael.path(path).attr({ fill: "#000", stroke: "#000", "fill-opacity": .5, "stroke-width": 1, "stroke-linecap": "round" })
 //				.translate(translation.x, translation.y)

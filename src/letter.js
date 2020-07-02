@@ -1,9 +1,12 @@
 class Letter {
 
+	constructor() {
+		this.scale = 0.2;
+	}
+
 	static ofDb(dbInfo) {
 		const letter = new Letter();
 		letter.initFromDb(dbInfo);
-
 	}
 
 	static ofFixedLetter(y, char) {
@@ -11,30 +14,81 @@ class Letter {
 		letter.initFromFixedLetter(y, char);
 	}
 
+	static ofFixedSVG(y, scale, svg) {
+		const letter = new Letter();
+		letter.scale = scale;
+		letter.initFromFixedSVG(y, svg);
+	}
+
+	initFromFixedSVG(y, svg) {
+
+		this.svg = svg;
+		this.startY = y;
+		this._id = -1;
+		this.isReplaced = false;
+
+		this.path = raphael.nested();
+		this.path.svg(svg);
+		this.path.move(10, y);
+		this.path.scale(this.scale, this.scale);
+
+		this.path.draggable()
+			.on('dragmove', e => {
+
+				if (!this.isReplaced) {
+					Letter.ofFixedSVG(this.startY, this.svg);
+					this.isReplaced = true;
+				}
+			});
+
+		this.path.draggable()
+			.on('dragend', e => {
+				this.savePosition();
+			}); 
+
+	}
+
 	initFromDb(dbInfo) {
 		this.char = dbInfo.char;
+		this.svg = dbInfo.svg;
+		this.scale = dbInfo.scale;
 		this._id = dbInfo._id;
 		this.isReplaced = true;
 
 		if (Letter.dbId <= this._id) {
 			Letter.dbId = "" + (Number(this._id) + 1);
 		}
-
-		const p = helvetica[this.char];
-
-		this.path = raphael.nested();
-		this.path.path(p);
-		log("initilized at ", {dbInfo});
-		this.path.move(dbInfo.x, dbInfo.y);
 		
-		this.path.scale(Letter.scale, Letter.scale);
-		this.path.attr({ fill: "black", "fill-opacity": 1 });
-//
-				this.path.draggable()
-			.on('dragend', e => {
-				this.savePosition();
-			});
-			}
+		if (this.char != null) {
+			const p = helvetica[this.char];
+
+			this.path = raphael.nested();
+			this.path.path(p);
+			log("initilized at ", { dbInfo });
+			this.path.move(dbInfo.x, dbInfo.y);
+
+			this.path.scale(this.scale, this.scale);
+			this.path.attr({ fill: "black", "fill-opacity": 1 });
+
+			this.path.draggable()
+				.on('dragend', e => {
+					this.savePosition();
+				});
+		}
+		
+		if (this.svg != null) {
+			this.path = raphael.nested();
+			this.path.svg(this.svg);
+			this.path.move(dbInfo.x, dbInfo.y);
+			this.path.scale(this.scale, this.scale);
+			
+			this.path.draggable()
+				.on('dragend', e => {
+					this.savePosition();
+				});
+		}
+		
+	}
 
 
 	initFromFixedLetter(y, char) {
@@ -49,73 +103,45 @@ class Letter {
 		this.path = raphael.nested();
 		this.path.path(p);
 		this.path.move(10, y);
-		this.path.scale(Letter.scale, Letter.scale);
+		this.path.scale(this.scale, this.scale);
 		this.path.attr({ fill: "black", "fill-opacity": 1 });
-		
+
 		this.path.draggable()
 			.on('dragmove', e => {
-				
-						if (!this.isReplaced) {
-			Letter.ofFixedLetter(this.startY, this.char);
-			this.isReplaced = true;
-		}
-				
-//				e.preventDefault()
-//				e.detail.handler.move(100, 200)
-				// events are still bound e.g. dragend will fire anyway
+
+				if (!this.isReplaced) {
+					Letter.ofFixedLetter(this.startY, this.char);
+					this.isReplaced = true;
+				}
+
 				const X = e.detail.event.clientX;
 				const Y = e.detail.event.clientY;
-				log("dm event=", {x:X, y:Y});
-				
-				if (Y<300) {
-					this.path.attr({fill: "cyan"});
+				log("dm event=", { x: X, y: Y });
+
+				if (Y < 300) {
+					this.path.attr({ fill: "cyan" });
 				} else {
-					this.path.attr({fill: "red"});
-	//				this.path.animate({duration:1000}).move(0,0);
+					this.path.attr({ fill: "red" });
 				}
 			});
-			
-			this.path.draggable()
+
+		this.path.draggable()
 			.on('dragend', e => {
-				
-				
-				
-				
-//				if (Y<300) {
-//
-//				} else {
-//log("YOu are doomed!");
-//				}
-				
 				this.savePosition();
 			});
 
 	}
-
-//	moveStart() {
-//
-//		this.odx = 0;
-//		this.ody = 0;
-//
-//		this.path.animate({ "fill-opacity": 0.2 }, 100);
-//	}
-
-
-
-
-
 
 	isTrashArea() {
 		return false;
 	}
 
 	savePosition(e) {
-		
+
 		const x = this.path.x();
 		const y = this.path.y();
-		
-		log("moveup", {x:x, y:y});
-		
+
+		log("moveup", { x: x, y: y });
 
 		if (this._id === -1) {
 			Letter.dbId++;
@@ -124,6 +150,8 @@ class Letter {
 
 		const savedata = {
 			char: this.char,
+			svg: this.svg,
+			scale: this.scale,
 			x: x,
 			y: y,
 			_id: "" + this._id
@@ -164,4 +192,4 @@ class Letter {
 }
 
 Letter.dbId = 0;
-Letter.scale = 0.2;
+

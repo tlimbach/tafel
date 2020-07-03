@@ -1,7 +1,6 @@
 class Letter {
 
 	constructor() {
-		this.scale = 0.2;
 	}
 
 	static ofDb(dbInfo) {
@@ -11,6 +10,7 @@ class Letter {
 
 	static ofFixedLetter(y, char) {
 		const letter = new Letter();
+		letter.scale = 0.3;
 		letter.initFromFixedLetter(y, char);
 	}
 

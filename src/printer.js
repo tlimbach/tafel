@@ -1,16 +1,7 @@
 class Printer {
 
-	constructor() {
-
-	}
-
 	print(dbInfos) {
 		document.getElementById("printdiv").innerHTML = '';
-		this.generateHtml(dbInfos);
-	}
-
-	generateHtml(dbInfos) {
-
 		const a4factor = 192 / 272;
 
 		const width = 400;
@@ -22,30 +13,17 @@ class Printer {
 		for (const dbInfo of dbInfos) {
 
 			this.path = printael.nested();
+			const translation = this.computeTranslation(dbInfo);
 
 			if (dbInfo.char != null) {
-
-				const p = helvetica[dbInfo.char];
-				const translation = this.computeTranslationLetter(dbInfo);
-
-				this.path.path(p);
-				log("initilized for print at ", { x: translation.x, y: translation.y });
-				this.path.move(translation.x, translation.y);
-				this.path.scale(dbInfo.scale, dbInfo.scale);
-
+				this.path.path(helvetica[dbInfo.char]);
 			}
 
 			if (dbInfo.svg != null) {
-
-
-				const translation = this.computeTranslationSVG(dbInfo);
-
 				this.path.svg(dbInfo.svg);
-				log("initilized waubi for print at ", { x: translation.x, y: translation.y });
-				this.path.move(translation.x, translation.y);
-				this.path.scale(dbInfo.scale, dbInfo.scale);
-
 			}
+			this.path.move(translation.x, translation.y);
+			this.path.scale(dbInfo.scale, dbInfo.scale);
 		}
 
 		try {
@@ -56,32 +34,10 @@ class Printer {
 
 	}
 
-	computeTranslationLetter(dbinfo) {
+	computeTranslation(dbinfo) {
 
-		const x = -1500 + dbinfo.x;
-		const y = -110 + dbinfo.y;
-
-		return { x, y };
-	}
-
-	computeTranslationSVG(dbinfo) {
-
-		log("waubui at ", { x: dbinfo.x, y: dbinfo.y });
-
-		let x = -500 + dbinfo.x;
-		let y = -35 + dbinfo.y;
-		
-		if (dbinfo.scale == 1.0) {
-			console.log("groﬂer wauzi!");
-			x = -300 +dbinfo.x;
-			y = -20 + dbinfo.y;
-		}
-		
-		if (dbinfo.scale == 2.0) {
-			console.log("riesen wauzi!");
-			x = -150 +dbinfo.x;
-			y = -10 + dbinfo.y;
-		}
+		const x = dbinfo.x - (300 / dbinfo.scale);
+		const y = dbinfo.y - (20 / dbinfo.scale);
 
 		return { x, y };
 	}
@@ -106,7 +62,7 @@ class Printer {
 		a.document.write('<html><body><div id="print1" class="small">');
 		a.document.write(divContents);
 		a.document.write("</div>");
-		
+
 		a.document.write('<div id="print2" class="small">');
 		a.document.write(divContents);
 		a.document.write("</div>");
@@ -128,13 +84,13 @@ class Printer {
 		a.document.write('<div id="print8" class="small">');
 		a.document.write(divContents);
 		a.document.write("</div>");
-		
-		
+
+
 		a.document.write('</body></html>');
-		
+
 		const scale = "scale(0.69, 0.69)";
-		
-		
+
+
 		a.document.getElementById("print1").style.transform = scale;
 		a.document.getElementById("print2").style.transform = scale;
 		a.document.getElementById("print3").style.transform = scale;
@@ -143,10 +99,10 @@ class Printer {
 		a.document.getElementById("print6").style.transform = scale;
 		a.document.getElementById("print7").style.transform = scale;
 		a.document.getElementById("print8").style.transform = scale;
-		
-		
-		
-		
+
+
+
+
 		a.print();
 		a.document.close();
 	}

@@ -8,16 +8,27 @@ class Letter {
 		letter.initFromDb(dbInfo);
 	}
 
-	static ofFixedLetter(y, char) {
+	static ofFixedLetter(x, y, char, scale) {
 		const letter = new Letter();
-		letter.scale = 0.3;
-		letter.initFromFixedLetter(y, char);
+		const path = letter.initFromFixedLetter(x, y, char, scale);
+
+		Letter.lettigroup.push(path);
+		
+		log("lettergroup", Letter.lettigroup.length);
 	}
 
 	static ofFixedSVG(y, scale, svg) {
 		const letter = new Letter();
 		letter.scale = scale;
-		letter.initFromFixedSVG(y, svg);
+		const path = letter.initFromFixedSVG(y, svg);
+		Letter.wauzigroup.push(path);
+	}
+
+	static removeElement(array, elem) {
+		const index = array.indexOf(elem);
+		if (index > -1) {
+			array.splice(index, 1);
+		}
 	}
 
 	initFromFixedSVG(y, svg) {
@@ -36,6 +47,7 @@ class Letter {
 			.on('dragmove', e => {
 
 				if (!this.isReplaced) {
+					Letter.removeElement(Letter.wauzigroup, this.path);
 					Letter.ofFixedSVG(this.startY, this.scale, this.svg);
 					this.isReplaced = true;
 				}
@@ -44,7 +56,9 @@ class Letter {
 		this.path.draggable()
 			.on('dragend', e => {
 				this.savePosition();
-			}); 
+			});
+
+		return this.path;
 
 	}
 
@@ -58,7 +72,7 @@ class Letter {
 		if (Number(Letter.dbId) <= Number(this._id)) {
 			Letter.dbId = "" + (Number(this._id) + 1);
 		}
-		
+
 		if (this.char != null) {
 			const p = helvetica[this.char];
 
@@ -75,34 +89,36 @@ class Letter {
 					this.savePosition();
 				});
 		}
-		
+
 		if (this.svg != null) {
 			this.path = raphael.nested();
 			this.path.svg(this.svg);
 			this.path.move(dbInfo.x, dbInfo.y);
 			this.path.scale(this.scale, this.scale);
-			
+
 			this.path.draggable()
 				.on('dragend', e => {
 					this.savePosition();
 				});
 		}
-		
+
 	}
 
 
-	initFromFixedLetter(y, char) {
+	initFromFixedLetter(x, y, char, scale) {
 
 		this.char = char;
+		this.scale = scale;
 		this.startY = y;
 		this._id = -1;
 		this.isReplaced = false;
 
 		const p = helvetica[char];
 
+		const thatPath = this.path;
 		this.path = raphael.nested();
 		this.path.path(p);
-		this.path.move(10, y);
+		this.path.move(x, y);
 		this.path.scale(this.scale, this.scale);
 		this.path.attr({ fill: "black", "fill-opacity": 1 });
 
@@ -110,23 +126,29 @@ class Letter {
 			.on('dragmove', e => {
 
 				if (!this.isReplaced) {
-					Letter.ofFixedLetter(this.startY, this.char);
+						Letter.removeElement(Letter.lettigroup, this.path);
+						Letter.ofFixedLetter(x, this.startY, this.char, this.scale);
 					this.isReplaced = true;
+					//					this.scale = 0.5;
+					//					this.path.scale(this.scale, this.scale);
 				}
- 
-//				log("dm event=", { x: X, y: Y });
 
-//				if (Y < 300) {
-//					this.path.attr({ fill: "cyan" });
-//				} else {
-//					this.path.attr({ fill: "red" });
-//				}
+				//				log("dm event=", { x: X, y: Y });
+
+				//				if (Y < 300) {
+				//					this.path.attr({ fill: "cyan" });
+				//				} else {
+				//					this.path.attr({ fill: "red" });
+				//				}
 			});
 
 		this.path.draggable()
 			.on('dragend', e => {
 				this.savePosition();
 			});
+
+
+		return this.path;
 
 	}
 

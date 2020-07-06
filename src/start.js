@@ -39,7 +39,7 @@ class Start {
 		Letter.lettigroup = [];
 		Letter.wauzigroup = [];
 
-		Letter.ofFixedLetter(40, 100, 'A', 0.1);
+		Letter.ofFixedLetter(40, 100, 'A', 0.5);
 		Letter.ofFixedLetter(240, 200, 'B', 0.2);
 		Letter.ofFixedLetter(40, 300, 'C', 0.3);
 		Letter.ofFixedLetter(140, 400, 'D', 0.4);

@@ -8,12 +8,12 @@ class Printer {
 		const height = width / a4factor;
 
 		const printael = SVG().addTo('#printdiv').size(width, height);
-		printael.rect(width, height).move(0, 0).fill("white");
+		printael.rect(width, height).move(0, 0).fill("green");
 
 		for (const dbInfo of dbInfos) {
 
 			this.path = printael.nested();
-			const translation = this.computeTranslation(dbInfo);
+
 
 			if (dbInfo.char != null) {
 				this.path.path(helvetica[dbInfo.char]);
@@ -22,8 +22,15 @@ class Printer {
 			if (dbInfo.svg != null) {
 				this.path.svg(dbInfo.svg);
 			}
-			this.path.move(translation.x, translation.y);
-			this.path.scale(dbInfo.scale, dbInfo.scale);
+
+			const scaledPath = printael.group().add(this.path);
+
+			scaledPath.scale(dbInfo.scale, dbInfo.scale);
+
+			const t = this.computeTranslation(dbInfo);
+
+			scaledPath.move(t.x, t.y);
+
 		}
 
 		try {
@@ -39,8 +46,13 @@ class Printer {
 		const x = dbinfo.x - (300 / dbinfo.scale);
 		const y = dbinfo.y - (20 / dbinfo.scale);
 
+
+
 		return { x, y };
+
+
 	}
+
 
 	printContent(el) {
 		var divContents = document.getElementById("printdiv").innerHTML;

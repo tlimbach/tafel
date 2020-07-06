@@ -13,9 +13,48 @@ class Letter {
 		const path = letter.initFromFixedLetter(x, y, char, scale);
 
 		Letter.lettigroup.push(path);
-		
+
 		log("lettergroup", Letter.lettigroup.length);
 	}
+
+	initFromFixedLetter(x, y, char, scale) {
+
+		this.char = char;
+		this.scale = scale;
+		this.startY = y;
+		this._id = -1;
+		this.isReplaced = false;
+
+		const p = helvetica[char];
+
+		this.path = raphael.nested().path(p);
+		this.scaledPath = raphael.group().add(this.path);
+		this.scaledPath.scale(this.scale, this.scale);
+
+		this.scaledPath.move(x, y);
+		this.path.attr({ fill: "black", "fill-opacity": 1 });
+
+		this.path.draggable()
+			.on('dragmove', e => {
+
+				if (!this.isReplaced) {
+					Letter.removeElement(Letter.lettigroup, this.path);
+					Letter.ofFixedLetter(x, this.startY, this.char, this.scale);
+					this.isReplaced = true;
+				}
+
+			});
+
+		this.path.draggable()
+			.on('dragend', e => {
+				this.savePosition();
+			});
+
+
+		return this.path;
+
+	}
+
 
 	static ofFixedSVG(y, scale, svg) {
 		const letter = new Letter();
@@ -38,10 +77,10 @@ class Letter {
 		this._id = -1;
 		this.isReplaced = false;
 
-		this.path = raphael.nested();
-		this.path.svg(svg);
-		this.path.move(10, y);
-		this.path.scale(this.scale, this.scale);
+		this.path = raphael.nested().svg(svg);
+		this.scaledPath = raphael.group().add(this.path);
+		this.scaledPath.scale(this.scale, this.scale);
+		this.scaledPath.move(10, y);
 
 		this.path.draggable()
 			.on('dragmove', e => {
@@ -76,12 +115,11 @@ class Letter {
 		if (this.char != null) {
 			const p = helvetica[this.char];
 
-			this.path = raphael.nested();
-			this.path.path(p);
-			log("initilized at ", { dbInfo });
-			this.path.move(dbInfo.x, dbInfo.y);
+			this.path = raphael.nested().path(p);
+			this.scaledPath = raphael.group().add(this.path);
+			this.scaledPath.scale(this.scale, this.scale);
+			this.scaledPath.move(dbInfo.x, dbInfo.y);
 
-			this.path.scale(this.scale, this.scale);
 			this.path.attr({ fill: "black", "fill-opacity": 1 });
 
 			this.path.draggable()
@@ -91,10 +129,10 @@ class Letter {
 		}
 
 		if (this.svg != null) {
-			this.path = raphael.nested();
-			this.path.svg(this.svg);
-			this.path.move(dbInfo.x, dbInfo.y);
-			this.path.scale(this.scale, this.scale);
+			this.path = raphael.nested().svg(this.svg);
+			this.scaledPath = raphael.group().add(this.path);
+			this.scaledPath.scale(this.scale, this.scale);
+			this.scaledPath.move(dbInfo.x, dbInfo.y);
 
 			this.path.draggable()
 				.on('dragend', e => {
@@ -105,52 +143,6 @@ class Letter {
 	}
 
 
-	initFromFixedLetter(x, y, char, scale) {
-
-		this.char = char;
-		this.scale = scale;
-		this.startY = y;
-		this._id = -1;
-		this.isReplaced = false;
-
-		const p = helvetica[char];
-
-		const thatPath = this.path;
-		this.path = raphael.nested();
-		this.path.path(p);
-		this.path.move(x, y);
-		this.path.scale(this.scale, this.scale);
-		this.path.attr({ fill: "black", "fill-opacity": 1 });
-
-		this.path.draggable()
-			.on('dragmove', e => {
-
-				if (!this.isReplaced) {
-						Letter.removeElement(Letter.lettigroup, this.path);
-						Letter.ofFixedLetter(x, this.startY, this.char, this.scale);
-					this.isReplaced = true;
-					//					this.scale = 0.5;
-					//					this.path.scale(this.scale, this.scale);
-				}
-
-				//				log("dm event=", { x: X, y: Y });
-
-				//				if (Y < 300) {
-				//					this.path.attr({ fill: "cyan" });
-				//				} else {
-				//					this.path.attr({ fill: "red" });
-				//				}
-			});
-
-		this.path.draggable()
-			.on('dragend', e => {
-				this.savePosition();
-			});
-
-
-		return this.path;
-
-	}
 
 	isTrashArea() {
 		return false;
@@ -161,7 +153,7 @@ class Letter {
 		const x = this.path.x();
 		const y = this.path.y();
 
-		log("moveup", { x: x, y: y });
+		log("moveup", { x: x, y: y, scale: this.scale });
 
 		if (this._id === -1) {
 			Letter.dbId++;

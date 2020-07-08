@@ -1,7 +1,9 @@
 class Printer {
 
 	print(dbInfos) {
-		document.getElementById("printdiv").innerHTML = '';
+		const pdiv = document.getElementById("printdiv");
+		pdiv.style.visibility = "visible";
+		pdiv.innerHTML = '';
 		const a4factor = 192 / 272;
 
 		const width = 400;
@@ -43,7 +45,7 @@ class Printer {
 
 	computeTranslation(dbinfo) {
 
-		const x = dbinfo.x - (300 / dbinfo.scale);
+		const x = dbinfo.x - (500 / dbinfo.scale);
 		const y = dbinfo.y - (20 / dbinfo.scale);
 
 

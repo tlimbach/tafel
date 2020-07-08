@@ -7,6 +7,7 @@
   	<script type="text/javascript" src="src/svg.draggable.js"></script>
 	<script type="text/javascript" src="src/helvetica.js"></script>
 	<script type="text/javascript" src="src/letter.js"></script>
+	<script type="text/javascript" src="src/pageselector.js"></script>
 	<script type="text/javascript" src="src/printer.js"></script>
 	<script type="text/javascript" src="src/start.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/pouchdb/7.2.1/pouchdb.js"></script>
@@ -21,7 +22,7 @@
 
 	<script type="text/javascript">
 	
-	var raphael;
+	var paper;
 	var db;
 	
 	function log(message, obj){
@@ -39,7 +40,7 @@
 #printdiv {
 	display:visible;
 	width: 1400px;
-  	height: 1567px;
+  	height: 0px;
 	background-color:red;
 }
 </style>

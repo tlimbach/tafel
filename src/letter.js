@@ -3,6 +3,10 @@ class Letter {
 	constructor() {
 	}
 
+	static clearPage(){
+		
+	}
+
 	static ofDb(dbInfo) {
 		const letter = new Letter();
 		letter.initFromDb(dbInfo);
@@ -27,8 +31,8 @@ class Letter {
 
 		const p = helvetica[char];
 
-		this.path = raphael.nested().path(p);
-		this.scaledPath = raphael.group().add(this.path);
+		this.path = paper.nested().path(p);
+		this.scaledPath = paper.group().add(this.path);
 		this.scaledPath.scale(this.scale, this.scale);
 
 		this.scaledPath.move(x, y);
@@ -38,6 +42,9 @@ class Letter {
 			.on('dragmove', e => {
 
 				if (!this.isReplaced) {
+					
+					Letter.onPage.push(this.scaledPath);
+					
 					Letter.removeElement(Letter.lettigroup, this.path);
 					Letter.ofFixedLetter(x, this.startY, this.char, this.scale);
 					this.isReplaced = true;
@@ -77,8 +84,8 @@ class Letter {
 		this._id = -1;
 		this.isReplaced = false;
 
-		this.path = raphael.nested().svg(svg);
-		this.scaledPath = raphael.group().add(this.path);
+		this.path = paper.nested().svg(svg);
+		this.scaledPath = paper.group().add(this.path);
 		this.scaledPath.scale(this.scale, this.scale);
 		this.scaledPath.move(10, y);
 
@@ -86,6 +93,9 @@ class Letter {
 			.on('dragmove', e => {
 
 				if (!this.isReplaced) {
+					
+					Letter.onPage.push(this.scaledPath);
+					
 					Letter.removeElement(Letter.wauzigroup, this.path);
 					Letter.ofFixedSVG(this.startY, this.scale, this.svg);
 					this.isReplaced = true;
@@ -115,8 +125,8 @@ class Letter {
 		if (this.char != null) {
 			const p = helvetica[this.char];
 
-			this.path = raphael.nested().path(p);
-			this.scaledPath = raphael.group().add(this.path);
+			this.path = paper.nested().path(p);
+			this.scaledPath = paper.group().add(this.path);
 			this.scaledPath.scale(this.scale, this.scale);
 			this.scaledPath.move(dbInfo.x, dbInfo.y);
 
@@ -129,8 +139,8 @@ class Letter {
 		}
 
 		if (this.svg != null) {
-			this.path = raphael.nested().svg(this.svg);
-			this.scaledPath = raphael.group().add(this.path);
+			this.path = paper.nested().svg(this.svg);
+			this.scaledPath = paper.group().add(this.path);
 			this.scaledPath.scale(this.scale, this.scale);
 			this.scaledPath.move(dbInfo.x, dbInfo.y);
 
@@ -139,6 +149,8 @@ class Letter {
 					this.savePosition();
 				});
 		}
+
+		Letter.onPage.push(this.scaledPath);
 
 	}
 
@@ -161,6 +173,7 @@ class Letter {
 		}
 
 		const savedata = {
+			page: Letter.page,
 			char: this.char,
 			svg: this.svg,
 			scale: this.scale,
@@ -173,23 +186,23 @@ class Letter {
 
 		db.get(savedata._id, function(err, doc) {
 			if (err) {
-				console.log('0', err);
+//				console.log('0', err);
 				// Noch nicht in Datenbank vorhanden
 				db.put(savedata,
 					function(err, response) {
 						if (err) {
-							console.log('1', err);
+//							console.log('1', err);
 						}
 						if (response) {
-							console.log('2', response);
+//							console.log('2', response);
 						}
 					});
 			} else {
-				console.log('found doc for id ' + JSON.stringify(doc));
+//				console.log('found doc for id ' + JSON.stringify(doc));
 				savedata._rev = doc._rev;
 
 				if (that.isTrashArea()) {
-					console.log("deleting", savedata);
+//					console.log("deleting", savedata);
 					db.remove(savedata);
 					that.path.remove();
 				} else {
@@ -204,4 +217,5 @@ class Letter {
 }
 
 Letter.dbId = 0;
-
+Letter.onPage =[];
+Letter.page = 1;
